@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Calendar</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="ts/main.ts" defer></script>
+    <link rel="stylesheet" href="scss/style.scss">
+</head>
+<body>
+    <div class="calendar">
+        <div class="calendar__header">
+            <p class="calendar__header__month">January</p>
+            <div class="calendar__header__controls">
+                <button class="calendar__header__back" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <button class="calendar__header__next" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="calendar__days">
+            <ul class="calendar__days__names">
+                <li class="calendar-day-name">Ma</li>
+                <li class="calendar-day-name">Tu</li>
+                <li class="calendar-day-name">We</li>
+                <li class="calendar-day-name">Th</li>
+                <li class="calendar-day-name">Fr</li>
+                <li class="calendar-day-name">Sa</li>
+                <li class="calendar-day-name">Su</li>
+            </ul>
+            <ul class="calendar__days__numbers"></ul>
+        </div>
+    </div>
+</body>
+</html>
