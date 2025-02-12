@@ -33,6 +33,10 @@ button {
 
         &__month {
             font-weight: 700;
+
+            &--current {
+                text-decoration: underline;
+            }
         }
 
         &__controls {
@@ -60,6 +64,10 @@ button {
         gap: 0.5rem;
         grid-template-columns: repeat(7, 1fr);
         grid-auto-rows: max-content;
+
+        &__names {
+            text-align: center;
+        }
 
         &__names, &__numbers {
             display: contents;
@@ -94,4 +102,5 @@ button {
 
 .calendar-day-name {
     font-weight: 600;
+    font-size: 1.3rem;
 }

@@ -1,14 +1,28 @@
-function getDatesOfMonth(month: number) {
-    const dates = [];
-    const currentDate = new Date();
-    currentDate.setMonth(month, 1);
+const weekDayFormat = new Intl.DateTimeFormat(undefined, { weekday: "short" });
+const monthFormat = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" });
 
-    while (currentDate.getMonth() === month) {
+let weekDayNames: string[] = [];
+for (let i = 0; i < 7; i++) {
+    weekDayNames.push(weekDayFormat.format(new Date(2021, 5, i)));
+}
+
+function getDatesOfMonth(month: Date) {
+    const dates = [];
+    const currentMonth = month.getMonth();
+    const currentDate = new Date(month);
+    currentDate.setDate(1);
+
+    while (currentDate.getMonth() === currentMonth) {
         dates.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
     return dates;
+}
+
+function compareMonths(date1: Date, date2: Date) {
+    return date1.getFullYear() == date2.getFullYear() &&
+        date1.getMonth() == date2.getMonth();
 }
 
 function compareDates(date1: Date, date2: Date) {
@@ -21,20 +35,11 @@ function mod(num: number, modulo: number) {
     return ((num % modulo) + modulo) % modulo;
 }
 
-function getMonthName(month: number) {
-    const date = new Date();
-    date.setMonth(month);
-    return date.toLocaleString(undefined, {
-        year: "numeric",
-        month: "long"
-    });
-}
-
 class Calendar {
     private calendarDays: HTMLDivElement;
     private calendarMonth: HTMLParagraphElement;
 
-    private currentMonth: number;
+    private currentMonth: Date;
     private dayElements = new Map<Date, HTMLLIElement>();
     private selectedDayElement?: HTMLLIElement;
 
@@ -47,22 +52,34 @@ class Calendar {
 
         this.selectedDate = new Date(selectedDate);
         this.selectedDate.setHours(0, 0, 0, 0);
-        this.currentMonth = selectedDate.getMonth();
+        this.currentMonth = new Date(this.selectedDate);
+
+        const dayNames = element.querySelector<HTMLUListElement>(".calendar__days__names")!;
+        const fragment = document.createDocumentFragment();
+
+        for (const dayName of weekDayNames) {
+            const nameElement = document.createElement("li");
+            nameElement.innerText = dayName;
+            nameElement.classList.add("calendar-day-name");
+            fragment.appendChild(nameElement);
+        }
+
+        dayNames.appendChild(fragment);
 
         const backButton = element.querySelector(".calendar__header__back")!;
         const nextButton = element.querySelector(".calendar__header__next")!;
 
         backButton.addEventListener("click", () => {
-            this.currentMonth--;
-            this.update();
+            this.currentMonth.setMonth(this.currentMonth.getMonth() - 1);
+            this.updateDays();
         });
 
         nextButton.addEventListener("click", () => {
-            this.currentMonth++;
-            this.update();
+            this.currentMonth.setMonth(this.currentMonth.getMonth() + 1);
+            this.updateDays();
         });
 
-        this.update();
+        this.updateDays();
     }
 
     public setSelected(value: Date) {
@@ -83,13 +100,15 @@ class Calendar {
         }
     }
 
-    private update() {
+    private updateDays() {
         for (const element of this.dayElements.values()) {
             element.remove();
         }
-
         this.dayElements.clear();
-        this.calendarMonth.innerText = getMonthName(this.currentMonth);
+
+        const isCurrentMonth = compareMonths(this.currentMonth, new Date());
+        this.calendarMonth.classList.toggle("calendar__header__month--current", isCurrentMonth);
+        this.calendarMonth.innerText = monthFormat.format(this.currentMonth);
 
         const fragment = document.createDocumentFragment();
 
@@ -118,7 +137,7 @@ class Calendar {
 }
 
 for (const calendarElement of document.querySelectorAll<HTMLDivElement>(".calendar")) {
-    const calendar = new Calendar(calendarElement, new Date("02-13-2025"));
+    const calendar = new Calendar(calendarElement);
 
     calendar.onSelect = (date) => {
         console.log(`New date: ${date}`)
