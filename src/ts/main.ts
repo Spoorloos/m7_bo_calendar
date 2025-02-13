@@ -22,10 +22,6 @@ function compareDates(date1: Date, date2: Date) {
     return compareMonths(date1, date2) && date1.getDate() == date2.getDate();
 }
 
-function mod(num: number, modulo: number) {
-    return ((num % modulo) + modulo) % modulo;
-}
-
 class Calendar {
     private calendarDays: HTMLDivElement;
     private calendarMonth: HTMLParagraphElement;
@@ -38,28 +34,28 @@ class Calendar {
     public onSelect?: ((value: Date) => void);
 
     constructor(element: HTMLDivElement, selectedDate: Date = new Date()) {
-        this.calendarDays = element.querySelector(".calendar__days-numbers")!;
-        this.calendarMonth = element.querySelector(".calendar__header-month")!;
+        this.calendarDays = element.querySelector(".calendar__days")!;
+        this.calendarMonth = element.querySelector(".calendar__month")!;
 
         this.selectedDate = new Date(selectedDate);
         this.selectedDate.setHours(0, 0, 0, 0);
         this.currentMonth = new Date(this.selectedDate);
         this.currentMonth.setDate(1);
 
-        const dayNames = element.querySelector<HTMLUListElement>(".calendar__days-names")!;
+        const dayNames = element.querySelector<HTMLUListElement>(".calendar__day-names")!;
         const fragment = document.createDocumentFragment();
 
         for (const dayName of weekDayNames) {
             const nameElement = document.createElement("li");
             nameElement.innerText = dayName;
-            nameElement.classList.add("calendar-day-name");
+            nameElement.classList.add("calendar__day-name");
             fragment.appendChild(nameElement);
         }
 
         dayNames.appendChild(fragment);
 
-        const backButton = element.querySelector<HTMLButtonElement>(".calendar__header-back")!;
-        const nextButton = element.querySelector<HTMLButtonElement>(".calendar__header-next")!;
+        const backButton = element.querySelector<HTMLButtonElement>(".calendar__control--back")!;
+        const nextButton = element.querySelector<HTMLButtonElement>(".calendar__control--next")!;
 
         backButton.addEventListener("click", () => {
             this.currentMonth.setMonth(this.currentMonth.getMonth() - 1);
@@ -81,12 +77,12 @@ class Calendar {
 
         this.selectedDate = new Date(value);
         this.selectedDate.setHours(0, 0, 0, 0);
-        this.selectedDayElement?.classList.remove("calendar-day--selected");
+        this.selectedDayElement?.classList.remove("calendar__day--selected");
         this.onSelect?.(this.selectedDate);
 
         for (const [date, dayElement] of this.dayElements.entries()) {
             if (compareDates(date, this.selectedDate)) {
-                dayElement.classList.add("calendar-day--selected");
+                dayElement.classList.add("calendar__day--selected");
                 this.selectedDayElement = dayElement;
             }
         }
@@ -100,7 +96,7 @@ class Calendar {
         this.dayElements.clear();
 
         const isCurrentMonth = compareMonths(this.currentMonth, new Date());
-        this.calendarMonth.classList.toggle("calendar__header-month--current", isCurrentMonth);
+        this.calendarMonth.classList.toggle("calendar__month--current", isCurrentMonth);
         this.calendarMonth.innerText = monthFormat.format(this.currentMonth);
 
         const dates = getDatesOfMonth(this.currentMonth);
@@ -109,17 +105,21 @@ class Calendar {
         for (const date of dates) {
             const dayElement = document.createElement("li");
             dayElement.innerText = date.getDate().toString();
-            dayElement.classList.add("calendar-day");
-            dayElement.style.gridColumn = (mod(date.getDay() - 1, 7) + 1).toString();
+            dayElement.classList.add("calendar__day");
             dayElement.addEventListener("click", () => this.setSelected(date));
 
+            if (date.getDate() === 1) {
+                const day = date.getDay();
+                dayElement.style.gridColumnStart = (day === 0 ? 7 : day).toString();
+            }
+
             if (compareDates(date, new Date())) {
-                dayElement.classList.add("calendar-day--today");
+                dayElement.classList.add("calendar__day--today");
             }
 
             if (compareDates(date, this.selectedDate)) {
                 this.selectedDayElement = dayElement;
-                dayElement.classList.add("calendar-day--selected");
+                dayElement.classList.add("calendar__day--selected");
             }
 
             this.dayElements.set(date, dayElement);
