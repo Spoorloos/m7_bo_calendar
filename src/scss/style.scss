@@ -49,8 +49,8 @@ button {
             border: none;
             background-color: transparent;
             line-height: 0;
-            transition: color 0.1s;
             color: #72a1ff;
+            transition: color 0.2s;
 
             &:hover {
                 color: #377AFF;
@@ -84,6 +84,8 @@ button {
     align-items: center;
     cursor: pointer;
     font-weight: 300;
+    transition-property: background-color, color;
+    transition-duration: 0.2s;
 
     &--today {
         font-weight: 700;
@@ -92,7 +94,6 @@ button {
     &--selected {
         background-color: #E0EFFF;
         color: #377AFF;
-        font-weight: 700;
     }
 
     &:not(&--selected):hover {
