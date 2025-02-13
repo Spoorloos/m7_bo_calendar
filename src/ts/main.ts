@@ -110,9 +110,10 @@ class Calendar {
         this.calendarMonth.classList.toggle("calendar__header__month--current", isCurrentMonth);
         this.calendarMonth.innerText = monthFormat.format(this.currentMonth);
 
+        const dates = getDatesOfMonth(this.currentMonth);
         const fragment = document.createDocumentFragment();
 
-        for (const date of getDatesOfMonth(this.currentMonth)) {
+        for (const date of dates) {
             const dayElement = document.createElement("li");
             dayElement.innerText = date.getDate().toString();
             dayElement.classList.add("calendar-day");
