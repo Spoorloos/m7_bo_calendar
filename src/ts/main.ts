@@ -1,18 +1,12 @@
 const weekDayFormat = new Intl.DateTimeFormat(undefined, { weekday: "short" });
 const monthFormat = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" });
-
-let weekDayNames: string[] = [];
-for (let i = 0; i < 7; i++) {
-    weekDayNames.push(weekDayFormat.format(new Date(2021, 5, i)));
-}
+const weekDayNames = Array.from({ length: 7 }, (_, i) => weekDayFormat.format(new Date(2021, 5, i)));
 
 function getDatesOfMonth(month: Date) {
     const dates = [];
-    const currentMonth = month.getMonth();
     const currentDate = new Date(month);
-    currentDate.setDate(1);
 
-    while (currentDate.getMonth() === currentMonth) {
+    while (currentDate.getMonth() === month.getMonth()) {
         dates.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -21,14 +15,11 @@ function getDatesOfMonth(month: Date) {
 }
 
 function compareMonths(date1: Date, date2: Date) {
-    return date1.getFullYear() == date2.getFullYear() &&
-        date1.getMonth() == date2.getMonth();
+    return date1.getFullYear() == date2.getFullYear() && date1.getMonth() == date2.getMonth();
 }
 
 function compareDates(date1: Date, date2: Date) {
-    return date1.getFullYear() == date2.getFullYear() &&
-        date1.getMonth() == date2.getMonth() &&
-        date1.getDate() == date2.getDate();
+    return compareMonths(date1, date2) && date1.getDate() == date2.getDate();
 }
 
 function mod(num: number, modulo: number) {
@@ -53,6 +44,7 @@ class Calendar {
         this.selectedDate = new Date(selectedDate);
         this.selectedDate.setHours(0, 0, 0, 0);
         this.currentMonth = new Date(this.selectedDate);
+        this.currentMonth.setDate(1);
 
         const dayNames = element.querySelector<HTMLUListElement>(".calendar__days__names")!;
         const fragment = document.createDocumentFragment();
@@ -66,8 +58,8 @@ class Calendar {
 
         dayNames.appendChild(fragment);
 
-        const backButton = element.querySelector(".calendar__header__back")!;
-        const nextButton = element.querySelector(".calendar__header__next")!;
+        const backButton = element.querySelector<HTMLButtonElement>(".calendar__header__back")!;
+        const nextButton = element.querySelector<HTMLButtonElement>(".calendar__header__next")!;
 
         backButton.addEventListener("click", () => {
             this.currentMonth.setMonth(this.currentMonth.getMonth() - 1);
@@ -104,6 +96,7 @@ class Calendar {
         for (const element of this.dayElements.values()) {
             element.remove();
         }
+
         this.dayElements.clear();
 
         const isCurrentMonth = compareMonths(this.currentMonth, new Date());
