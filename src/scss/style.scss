@@ -1,3 +1,7 @@
+$selectedBgColor: #E0EFFF;
+$selectedTextColor: #377AFF;
+$hoverBgColor: #F4F4F4;
+
 *, *::before, *::after {
     margin: 0;
     padding: 0;
@@ -30,31 +34,31 @@ button {
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
 
-        &__month {
-            font-weight: 700;
+    &__header-month {
+        font-weight: 700;
 
-            &--current {
-                text-decoration: underline;
-            }
+        &--current {
+            text-decoration: underline;
         }
+    }
 
-        &__controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+    &__header-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
 
-        &__back, &__next {
-            border: none;
-            background-color: transparent;
-            line-height: 0;
-            color: #72a1ff;
-            transition: color 0.2s;
+    &__header-back, &__header-next {
+        border: none;
+        background-color: transparent;
+        border-radius: 100%;
+        line-height: 0;
+        transition: color 0.1s;
 
-            &:hover {
-                color: #377AFF;
-            }
+        &:hover {
+            color: $selectedTextColor;
         }
     }
 
@@ -64,15 +68,15 @@ button {
         gap: 0.5rem;
         grid-template-columns: repeat(7, 1fr);
         grid-auto-rows: max-content;
+    }
 
-        &__names {
-            text-align: center;
-        }
+    &__days-names, &__days-numbers {
+        display: contents;
+        list-style-type: none;
+    }
 
-        &__names, &__numbers {
-            display: contents;
-            list-style-type: none;
-        }
+    &__days-names {
+        text-align: center;
     }
 }
 
@@ -85,19 +89,19 @@ button {
     cursor: pointer;
     font-weight: 300;
     transition-property: background-color, color;
-    transition-duration: 0.2s;
+    transition-duration: 0.1s;
 
     &--today {
         font-weight: 700;
     }
 
     &--selected {
-        background-color: #E0EFFF;
-        color: #377AFF;
+        background-color: $selectedBgColor;
+        color: $selectedTextColor;
     }
 
     &:not(&--selected):hover {
-        background-color: #F4F4F4;
+        background-color: $hoverBgColor;
     }
 }
 

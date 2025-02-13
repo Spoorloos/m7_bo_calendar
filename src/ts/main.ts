@@ -38,15 +38,15 @@ class Calendar {
     public onSelect?: ((value: Date) => void);
 
     constructor(element: HTMLDivElement, selectedDate: Date = new Date()) {
-        this.calendarDays = element.querySelector(".calendar__days__numbers")!;
-        this.calendarMonth = element.querySelector(".calendar__header__month")!;
+        this.calendarDays = element.querySelector(".calendar__days-numbers")!;
+        this.calendarMonth = element.querySelector(".calendar__header-month")!;
 
         this.selectedDate = new Date(selectedDate);
         this.selectedDate.setHours(0, 0, 0, 0);
         this.currentMonth = new Date(this.selectedDate);
         this.currentMonth.setDate(1);
 
-        const dayNames = element.querySelector<HTMLUListElement>(".calendar__days__names")!;
+        const dayNames = element.querySelector<HTMLUListElement>(".calendar__days-names")!;
         const fragment = document.createDocumentFragment();
 
         for (const dayName of weekDayNames) {
@@ -58,8 +58,8 @@ class Calendar {
 
         dayNames.appendChild(fragment);
 
-        const backButton = element.querySelector<HTMLButtonElement>(".calendar__header__back")!;
-        const nextButton = element.querySelector<HTMLButtonElement>(".calendar__header__next")!;
+        const backButton = element.querySelector<HTMLButtonElement>(".calendar__header-back")!;
+        const nextButton = element.querySelector<HTMLButtonElement>(".calendar__header-next")!;
 
         backButton.addEventListener("click", () => {
             this.currentMonth.setMonth(this.currentMonth.getMonth() - 1);
@@ -100,7 +100,7 @@ class Calendar {
         this.dayElements.clear();
 
         const isCurrentMonth = compareMonths(this.currentMonth, new Date());
-        this.calendarMonth.classList.toggle("calendar__header__month--current", isCurrentMonth);
+        this.calendarMonth.classList.toggle("calendar__header-month--current", isCurrentMonth);
         this.calendarMonth.innerText = monthFormat.format(this.currentMonth);
 
         const dates = getDatesOfMonth(this.currentMonth);
