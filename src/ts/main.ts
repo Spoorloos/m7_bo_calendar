@@ -108,17 +108,23 @@ class Calendar {
         this.calendarMonth.innerText = monthFormat.format(this.currentMonth);
         this.calendarMonth.dateTime = formatYearMonth(this.currentMonth);
 
-        const dates = getDatesOfMonth(this.currentMonth);
         const fragment = document.createDocumentFragment();
+        const dates = getDatesOfMonth(this.currentMonth);
 
-        for (const date of dates) {
+        const firstDay = dates[0].getDay();
+        const firstDayOffset = firstDay === 0 ? 7 : firstDay;
+        const daySlots = Math.ceil((dates.length + firstDayOffset) / 7) * 7;
+
+        for (let i = 1; i <= daySlots; i++) {
+            const date = new Date(this.currentMonth);
+            date.setDate(i - firstDayOffset + 1);
+
             const dayElement = document.createElement("li");
             dayElement.classList.add("calendar__day");
             dayElement.addEventListener("click", () => this.setSelected(date));
 
-            if (date.getDate() === 1) {
-                const day = date.getDay();
-                dayElement.style.gridColumnStart = (day === 0 ? 7 : day).toString();
+            if (compareDates(date, dates[0])) {
+                dayElement.style.gridColumnStart = firstDayOffset.toString();
             }
 
             if (compareDates(date, new Date())) {
@@ -128,6 +134,10 @@ class Calendar {
             if (compareDates(date, this.selectedDate)) {
                 this.selectedDayElement = dayElement;
                 dayElement.classList.add("calendar__day--selected");
+            }
+
+            if (date.getMonth() !== this.currentMonth.getMonth()) {
+                dayElement.classList.add("calendar__day--other-month");
             }
 
             const timeElement = document.createElement("time");
@@ -147,6 +157,6 @@ for (const calendarElement of document.querySelectorAll<HTMLDivElement>(".calend
     const calendar = new Calendar(calendarElement);
 
     calendar.onSelect = (date) => {
-        console.log(`New date: ${date}`)
+        console.log(`New date: ${date.toISOString()}`)
     }
 }

@@ -1,5 +1,6 @@
 $bgColor: #FFFFFF;
 $textColor: #000000;
+$otherMonthColor: #CCCCCC;
 $selectedBgColor: #E0EFFF;
 $selectedTextColor: #377AFF;
 $hoverBgColor: #F4F4F4;
@@ -102,6 +103,10 @@ body {
         &--selected {
             background-color: $selectedBgColor;
             color: $selectedTextColor;
+        }
+
+        &--other-month {
+            color: $otherMonthColor;
         }
 
         &:not(&--selected):hover {
