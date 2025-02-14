@@ -132,7 +132,7 @@ class Calendar {
                 dayElement.classList.add("calendar__day--selected");
             }
 
-            if (date.getMonth() !== this.currentMonth.getMonth()) {
+            if (!compareMonths(date, this.currentMonth)) {
                 dayElement.classList.add("calendar__day--other-month");
             }
 
