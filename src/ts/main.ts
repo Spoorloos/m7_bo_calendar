@@ -22,20 +22,28 @@ function compareDates(date1: Date, date2: Date) {
     return compareMonths(date1, date2) && date1.getDate() == date2.getDate();
 }
 
-class Calendar {
-    private calendarDays: HTMLDivElement;
-    private calendarMonth: HTMLParagraphElement;
+function formatYearMonth(date: Date) {
+    return `${date.getFullYear().toString().padStart(4, "0")}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
+}
 
-    private currentMonth: Date;
+function formatYearMonthDate(date: Date) {
+    return `${formatYearMonth(date)}-${date.getDate().toString().padStart(2, "0")}`;
+}
+
+class Calendar {
+    private calendarDays;
+    private calendarMonth;
+
+    private currentMonth;
     private dayElements = new Map<Date, HTMLLIElement>();
     private selectedDayElement?: HTMLLIElement;
 
-    public selectedDate: Date;
+    public selectedDate;
     public onSelect?: ((value: Date) => void);
 
     constructor(element: HTMLDivElement, selectedDate: Date = new Date()) {
-        this.calendarDays = element.querySelector(".calendar__days")!;
-        this.calendarMonth = element.querySelector(".calendar__month")!;
+        this.calendarDays = element.querySelector<HTMLDivElement>(".calendar__days")!;
+        this.calendarMonth = element.querySelector<HTMLTimeElement>(".calendar__month")!;
 
         this.selectedDate = new Date(selectedDate);
         this.selectedDate.setHours(0, 0, 0, 0);
@@ -98,13 +106,13 @@ class Calendar {
         const isCurrentMonth = compareMonths(this.currentMonth, new Date());
         this.calendarMonth.classList.toggle("calendar__month--current", isCurrentMonth);
         this.calendarMonth.innerText = monthFormat.format(this.currentMonth);
+        this.calendarMonth.dateTime = formatYearMonth(this.currentMonth);
 
         const dates = getDatesOfMonth(this.currentMonth);
         const fragment = document.createDocumentFragment();
 
         for (const date of dates) {
             const dayElement = document.createElement("li");
-            dayElement.innerText = date.getDate().toString();
             dayElement.classList.add("calendar__day");
             dayElement.addEventListener("click", () => this.setSelected(date));
 
@@ -121,6 +129,11 @@ class Calendar {
                 this.selectedDayElement = dayElement;
                 dayElement.classList.add("calendar__day--selected");
             }
+
+            const timeElement = document.createElement("time");
+            timeElement.innerText = date.getDate().toString();
+            timeElement.dateTime = formatYearMonthDate(date);
+            dayElement.appendChild(timeElement);
 
             this.dayElements.set(date, dayElement);
             fragment.appendChild(dayElement);
