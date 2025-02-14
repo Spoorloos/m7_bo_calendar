@@ -123,10 +123,6 @@ class Calendar {
             dayElement.classList.add("calendar__day");
             dayElement.addEventListener("click", () => this.setSelected(date));
 
-            if (compareDates(date, dates[0])) {
-                dayElement.style.gridColumnStart = firstDayOffset.toString();
-            }
-
             if (compareDates(date, new Date())) {
                 dayElement.classList.add("calendar__day--today");
             }
