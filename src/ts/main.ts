@@ -2,16 +2,16 @@ const weekDayFormat = new Intl.DateTimeFormat(undefined, { weekday: "short" });
 const monthFormat = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric" });
 const weekDayNames = Array.from({ length: 7 }, (_, i) => weekDayFormat.format(new Date(2021, 5, i)));
 
-function getDatesOfMonth(month: Date) {
-    const dates = [];
-    const currentDate = new Date(month);
+function getFirstDay(month: Date) {
+    const date = new Date(month);
+    date.setDate(1);
+    return (date.getDay() + 6) % 7 + 1;
+}
 
-    while (currentDate.getMonth() === month.getMonth()) {
-        dates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return dates;
+function getMonthDayCount(month: Date) {
+    const date = new Date(month);
+    date.setMonth(date.getMonth() + 1, 0);
+    return date.getDate();
 }
 
 function compareMonths(date1: Date, date2: Date) {
@@ -100,24 +100,21 @@ class Calendar {
         for (const element of this.dayElements.values()) {
             element.remove();
         }
-
         this.dayElements.clear();
 
-        const isCurrentMonth = compareMonths(this.currentMonth, new Date());
-        this.calendarMonth.classList.toggle("calendar__month--current", isCurrentMonth);
         this.calendarMonth.innerText = monthFormat.format(this.currentMonth);
         this.calendarMonth.dateTime = formatYearMonth(this.currentMonth);
+        this.calendarMonth.classList.toggle("calendar__month--current", compareMonths(this.currentMonth, new Date()));
+
+        const firstDay = getFirstDay(this.currentMonth);
+        const currentMonthDays = getMonthDayCount(this.currentMonth);
+        const totalDayCount = Math.ceil((currentMonthDays + firstDay) / 7) * 7;
 
         const fragment = document.createDocumentFragment();
-        const dates = getDatesOfMonth(this.currentMonth);
 
-        const firstDay = dates[0].getDay();
-        const firstDayOffset = firstDay === 0 ? 7 : firstDay;
-        const daySlots = Math.ceil((dates.length + firstDayOffset) / 7) * 7;
-
-        for (let i = 1; i <= daySlots; i++) {
+        for (let i = 1; i <= totalDayCount; i++) {
             const date = new Date(this.currentMonth);
-            date.setDate(i - firstDayOffset + 1);
+            date.setDate(i - firstDay + 1);
 
             const dayElement = document.createElement("li");
             dayElement.classList.add("calendar__day");
