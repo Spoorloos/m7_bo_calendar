@@ -31,19 +31,19 @@ function formatYearMonthDate(date: Date) {
 }
 
 class Calendar {
-    private calendarDays;
-    private calendarMonth;
+    private calendarDays: HTMLDivElement;
+    private calendarMonth: HTMLTimeElement;
 
-    private currentMonth;
+    private currentMonth: Date;
     private dayElements = new Map<Date, HTMLLIElement>();
     private selectedDayElement?: HTMLLIElement;
 
-    public selectedDate;
+    public selectedDate: Date;
     public onSelect?: ((value: Date) => void);
 
     constructor(element: HTMLDivElement, selectedDate: Date = new Date()) {
-        this.calendarDays = element.querySelector<HTMLDivElement>(".calendar__days")!;
-        this.calendarMonth = element.querySelector<HTMLTimeElement>(".calendar__month")!;
+        this.calendarDays = element.querySelector(".calendar__days")!;
+        this.calendarMonth = element.querySelector(".calendar__month")!;
 
         this.selectedDate = new Date(selectedDate);
         this.selectedDate.setHours(0, 0, 0, 0);
